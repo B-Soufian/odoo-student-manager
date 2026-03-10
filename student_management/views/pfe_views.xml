@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- 1. Form View -->
+    <record id="view_school_pfe_form" model="ir.ui.view">
+        <field name="name">school.pfe.form</field>
+        <field name="model">school.pfe</field>
+        <field name="arch" type="xml">
+            <form string="PFE">
+                <header>
+                    
+                    <button name="action_start_progress" string="Start Internship" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_submit_report" string="Submit Report" type="object" class="oe_highlight" invisible="state != 'progress'"/>
+                    <button name="action_defend" string="Mark as Defended" type="object" class="oe_highlight" invisible="state != 'submitted'"/>
+                    <button name="action_reset_draft" string="Reset to Draft" type="object" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,progress,submitted,defended"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Project Title"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Implementation of Odoo ERP"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Stagiaire Info">
+                            <!-- This will create a dropdown menu of your students! -->
+                            <field name="student_id"/>
+                        </group>
+                        <group string="Company Info">
+                            <field name="company_name"/>
+                            <field name="supervisor"/>
+                            <field name="academic_tutor"/>
+                        </group>
+                        <group string="Timeline">
+                            <field name="start_date"/>
+                            <field name="end_date"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 2. List View -->
+    <record id="view_school_pfe_list" model="ir.ui.view">
+        <field name="name">school.pfe.list</field>
+        <field name="model">school.pfe</field>
+        <field name="arch" type="xml">
+            <list string="PFE Projects">
+                <field name="name"/>
+                <field name="student_id"/>
+                <field name="company_name"/>
+                <field name="state" widget="badge" 
+                       decoration-info="state == 'progress'" 
+                       decoration-success="state == 'defended'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- 3. Action -->
+    <record id="action_school_pfe" model="ir.actions.act_window">
+        <field name="name">PFE Projects</field>
+        <field name="res_model">school.pfe</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- 4. Menu-->
+    <menuitem id="menu_school_pfe" 
+              name="PFE / Internships" 
+              parent="menu_school_student_master" 
+              action="action_school_pfe" 
+              sequence="20"/>
+
+</odoo>

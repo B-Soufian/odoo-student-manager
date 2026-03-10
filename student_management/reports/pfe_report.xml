@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- BUTTON -->
+    <record id="action_report_school_pfe" model="ir.actions.report">
+        <field name="name">Imprimer PFE</field> 
+        <field name="model">school.pfe</field> 
+        <field name="report_type">qweb-pdf</field> 
+        <field name="report_name">student_management.report_pfe_template_simple</field> 
+        <field name="binding_model_id" ref="model_school_pfe"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!--DESIGN OF THE PDF -->
+    <template id="report_pfe_template_simple">
+        <t t-call="web.html_container">
+            
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <h2>Fiche de Stage</h2>
+                    <hr/>
+                    <p>
+                        <strong>Sujet du PFE : </strong> 
+                        <span t-field="doc.name"/>
+                    </p>
+                    
+                    <p>
+                        <strong>Étudiant : </strong> 
+                        <span t-field="doc.student_id.name"/>
+                    </p>
+                    
+                    <p>
+                        <strong>Entreprise : </strong> 
+                        <span t-field="doc.company_name"/>
+                    </p>
+
+                    <p>
+                        <strong>Statut : </strong> 
+                        <span t-field="doc.state"/>
+                    </p>
+                    
+                </div>
+                
+            </t> 
+            
+        </t>
+    </template>
+
+    <!-- REPORT 2: Liste des Stagiaires -->
+
+    <!-- 1. Button  -->
+    <record id="action_report_stagiaires_list" model="ir.actions.report">
+        <field name="name">Liste des Stagiaires</field>
+        <field name="model">school.pfe</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">student_management.report_stagiaires_list_template</field>
+        <field name="binding_model_id" ref="model_school_pfe"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <!-- 2. Template Design -->
+    <template id="report_stagiaires_list_template">
+        <t t-call="web.html_container">
+            <div class="page">
+                <h2 >Liste des Stagiaires</h2>
+                <hr/>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Stagiaire</th>
+                            <th>Sujet du PFE</th>
+                            <th>Entreprise</th>
+                            <th>Encadrant Pro</th>
+                            <th>Date Début</th>
+                            <th>Date Fin</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="doc">
+                            <tr>
+                                <td><t t-esc="doc_index + 1"/></td>
+                                <td><strong><span t-field="doc.student_id.name"/></strong></td>
+                                <td><span t-field="doc.name"/></td>
+                                <td><span t-field="doc.company_name"/></td>
+                                <td><span t-field="doc.supervisor"/></td>
+                                <td><span t-field="doc.start_date"/></td>
+                                <td><span t-field="doc.end_date"/></td>
+                                <td>
+                                    <t t-if="doc.state == 'draft'">
+                                        <span style="color:red">Brouillon</span>
+                                    </t>
+                                    <t t-if="doc.state == 'progress'">
+                                        <span style="color:blue">En cours</span>
+                                    </t>
+                                    <t t-if="doc.state == 'submitted'">
+                                        <span style="color:orange">Rapport déposé</span>
+                                    </t>
+                                    <t t-if="doc.state == 'defended'">
+                                        <span style="color:green">Soutenu</span>
+                                    </t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <p class="total-row">
+                    <strong>Total des stagiaires : </strong>
+                    <t t-esc="len(docs)"/>
+                </p>
+            </div>
+        </t>
+    </template>
+
+</odoo>
